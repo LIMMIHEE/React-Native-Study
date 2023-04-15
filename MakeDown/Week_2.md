@@ -378,3 +378,253 @@ useEffect의 두 번째 파라미터에 비어있는 배열을 사용하면 된�
 
 - **이는 배열이 비어있으면 컴포넌트가 마운트될 때 
 딱 한 번만 함수를 호출하기 때문.**
+
+```jsx
+useEffect(() => {
+  console.log('컴포넌트가 마운트될 때 출력됨');
+  return () => {
+    console.log('컴포넌트가 언마운트될 때 출력됨');
+  }
+}, [])
+```
+
+---
+
+# 5장
+
+## 리액트 내비게이션
+
+리액트 네이티브에서는 여러 화면으로 구성된 앱을 만들기 위해서는
+
+내비게이션 관련 라이브러리를 사용해야한다.
+
+1. **react-navigation**
+    
+    리액트 네이티브 커뮤니티에서 관리하는 사용률 높은 라이브러리.
+    
+    공식에서도 해당 라이브러리를 구현 방법으로 소개하며
+    기능은 자바 스크립트로 구현되어있다.
+    이번에는 해당 라이브러리를 사용할 예정.
+    
+2. **react-native-navigation**
+    
+    Wix에서 관리하는 라이브러리
+    
+    이미 만들어진 네이티브 앱에 리액트를 적용할 때 사용하기 좋으며 
+    기능이 자바 스크립트가 아닌 네이티브 코드들로 구현되어 있어 
+    네이티브스러운 앱을 만들 수 있다.
+    
+
+## **react-navigation**
+
+### 네이티브 스택 네비게이터
+
+안드로이드에서는 Fragment, IOS에서는 UINavigationController를 
+
+사용하여 구현되었으며 가장 흔히 사용되고 있다.
+
+![예시 이미지](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/e665f209-9b7d-4142-abf0-1a3b15c0bdd3/Untitled.png)
+
+예시 이미지
+
+리액트의 네이티브 스택 네비게이터는
+
+createNativeStackNavigator를 가진 객체 이용해 제작한다.
+
+해당 객체 안에는 아래와 같은 컴포넌트들이 들어있다.
+
+- Navigator
+
+→ NavigationContainer 컴포넌트 안에 넣어야 정상 작동을 한다.
+
+    initialRouteName 파라미터를 통해 시작 화면을 설정할 수 있다.
+    지정하지 않는다면 내비게이터 안에 들어있는 첫 번째 화면을 보여준다.
+- Screen
+→ 각 화면을 설정 할 수 있는 컴포넌트.
+
+     name 파라미터로 화면의 이름을 설정하며
+     해당 name을 통해 조회 및 이동을 진행한다.
+
+선언 예시
+
+```jsx
+const Stack = createNativeStackNavigator();
+
+function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Detail" component={DetailScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+```
+
+스크린으로 사용되는 컴포넌트는 
+
+navigation 외 route라는 Props도 함께 받아오는데
+
+이는 객체 타입이며 아래와 같은 정보를 가지고 있다.
+
+- key : 화면의 고유 ID
+새로운 화면이 나타날 때 자동으로 생성된다.
+- name : 네이티브 스택 내비게이터를 설정할 때 지정한 이름
+- params : 화면 전환 시 지정한 라우트 파라미터
+
+예시
+
+```jsx
+{
+  "key": "Detail-vgDx8-H-8e7oao6a3xJz7",
+  "name": "Detail", 
+  "params": {"id": 1}
+}
+```
+
+### 스크린 이동
+
+스크린 이동시에 사용할 수 있는 Props는 두 가지가 존재한다.
+
+- navigate
+→ 이동할 화면이 같으면 화면을 새로 쌓지 않고 파라미터만 변경
+- push
+→ 이동할 화면이 같아도 화면을 새로 쌓으며 진행
+    **참고로 push는  스택 내비게이터 외에서는 사용이 불가능.**
+
+```jsx
+navigation.navigate('Detail')
+
+// 혹은
+navigation.push('Detail')
+```
+
+추가로 이동하며 의존해야하는 어떤 값이 있다면
+
+**라우트 파라미터**를 설정할 수 있다.
+
+```jsx
+navigation.navigate('Detail', {id: 1})
+
+// 1개 이상 담을 수도 있다.
+navigation.push('Detail', {id: 2 , name: 'koko'})
+```
+
+### 뒤로가기
+
+- push
+→ 바로 이전 화면으로 뒤로가기
+- popToTop
+→ 가장 첫 번째 화면으로 이동
+
+```jsx
+navigation.pop()
+navigation.popToTop()
+```
+
+### 헤더 커스터 마이징하기
+
+더욱 자세한 것은 5.2.5 챕터 참고
+
+1. options으로 설정하기
+
+```jsx
+<Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{
+            title: '홈',
+          }}
+        />
+```
+
+1. navigation.setOptions 으로 설정하기
+
+```jsx
+useEffect(() => {
+    navigation.setOptions({title: '홈'});
+  }, [navigation]);
+
+// 비게이션 option은 App 컴포넌트에서 Props를 통해 설정한 option을 덮어씌운다.
+```
+
+위 예시를 보면 useEffect Hook을 이용하고 있으며 
+
+현재 해당 deps( 두번째 파라미터 )에 바뀌지 않는 객체인 navigation을 넣었는데.
+
+그 이유는 해당 객체는 바뀌지 않아도 ESLint(자바스크립트 검사 도구) 규칙상 useEffect 내부에 사용하는 값을 꼭 deps에 넣어야 하기 때문이다.
+
+![헤더 위치 참고 이미지](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/14be7877-4fe4-4675-be4f-e43b05acbbb0/Untitled.png)
+
+헤더 위치 참고 이미지
+
+---
+
+### **드로어 내비게이터**
+
+좌측 또는 우측에 사이드바를 만들고 싶을 때 사용하는 내비게이터
+
+createDrawerNavigator 로 Drawer 객체를 만들어 사용하는 방식으로
+
+네이티브 스택 내비게이터를 사용했을 때와 사용법이 꽤 비슷하다. 
+
+navigation.push(열기), navigation.pop(뒤로가기)는 해당 내비게이터와 호환되지 않으며
+
+아래의 함수들을 사용한다.
+
+- `navigation.openDrawer()`  화면 열기
+- `navigation.goBack()` 화면 돌아가기
+- `navigation.closeDrawer()`  드로어 (화면목록) 닫기
+
+선언 예시
+
+```jsx
+function App() {
+  return (
+    <NavigationContainer>
+      <Drawer.Navigator
+        initialRouteName="Home"
+        drawerPosition="left"
+        backBehavior="history"
+      >
+        <Drawer.Screen name="Home" component={HomeScreen} />
+        <Drawer.Screen name="Setting" component={SettingScreen} />
+      </Drawer.Navigator>
+    </NavigationContainer>
+  );
+}
+```
+
+**파라미터 설명**
+
+- drawerPosition : 드로어가 나타나는 위치를 정한다. 
+                             left / right 중 택 1. 기본설정은 left.
+- backBehavior : 뒤로가기를 할 때 어떻게 작동할지 설정한다.
+    - initialRoute: 가장 첫 번째 화면을 보여준다.
+    - order: Drawer.Screen 컴포넌트를 사용한 순서에 따라 현재 화면의 이전 화면을 보여준다.
+    - history: 현재 화면을 열기 직전에 봤던 화면을 보여준다.
+    - none: 뒤로가기를 수행하지 않는다.
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/5c39b28f-7719-4096-bc35-d0bbcafbc2c3/Untitled.png)
+
+---
+
+### **하단 탭 내비게이터**
+
+이름 그대로 하단에 탭을 보여주는 내비게이터
+
+탭을 이용해 이동하는 형식이므로 별도의 push, pop과 같은 함수는 없다.
+
+```jsx
+<NavigationContainer>
+      <Tab.Navigator initialRouteName="Home">
+        <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Screen name="Search" component={SearchScreen} />
+        <Tab.Screen name="Notification" component={NotificationScreen} />
+        <Tab.Screen name="Message" component={MessageScreen} />
+      </Tab.Navigator>
+    </NavigationContainer>
+```
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/101a66ee-0298-4c5c-a436-ac2b0a977f42/Untitled.png)
