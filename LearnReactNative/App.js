@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DateHead  from './components/DateHead';
 import AddTodo from './components/AddTodo';
 import Empty from './components/Empty';
@@ -14,9 +14,20 @@ export default function App() {
     {id: 2,text: "리액트 네이티브 기초 공부", done:false},
     {id: 3,text: "투두 리스트 만들어보기", done:false}
   ]);
+
+    useEffect(() => {
+      todosStorage
+        .get()
+        .then(setTodos)
+        .catch(console.error);
+    }, []);
+  
+    useEffect(() => {
+      todosStorage.set(todos).catch(console.error);
+  }, [todos]);
+
+
   const onInsert = text => {
-    // 새로 등록할 id를 구하고 계산하여
-    // 새로운 todo를 만든다.
     const nextId = todos.length > 0 ? Math.max(...todos.map(todo => todo.id)) + 1 : 1;
     const todo = {
       id: nextId,
@@ -25,6 +36,11 @@ export default function App() {
     }
 
     setTodos(todos.concat(todo));
+  }
+
+  const onRemove = id => {
+    const nextTodos = todos.filter(todo => todo.id !== id);
+    setTodos(nextTodos);
   }
 
   const onToggle = id => {
@@ -42,9 +58,8 @@ export default function App() {
           style={styles.avoid}>
           <DateHead date={today}/>
           {todos.length === 0 ? <Empty/> :
-            <TodoList todos = {todos} onToggle={onToggle}/>
+            <TodoList todos = {todos} onToggle={onToggle} onRemove={onRemove}/>
           }
-          
           <AddTodo onInsert={onInsert}/>
         </KeyboardAvoidingView>
       </SafeAreaView>
