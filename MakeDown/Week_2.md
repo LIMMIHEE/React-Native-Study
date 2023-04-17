@@ -1,5 +1,3 @@
-# Week2
-
 ## 불변성
 
 리액트에서 객체와 배열 타입의 상태를 다룰 때는 해당 불변성을 지켜야한다.
@@ -628,3 +626,366 @@ function App() {
 ```
 
 ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/101a66ee-0298-4c5c-a436-ac2b0a977f42/Untitled.png)
+
+---
+
+### **머티리얼 상단 탭 내비게이터**
+
+바로 위의 하단 탭 내비게이터와 유사하지만
+
+해당 탭이 상단에 위치해있으며, ripple 효과가 적용된 내비게이터.
+
+- ripple 효과는 안드로이드 5이상에서 나타나며 IOS는 미적용된다.
+
+화면을 스와이프 형태로 전환할 수도 있다.
+
+사용법 예시
+
+```jsx
+const Tab = createMaterialTopTabNavigator();
+
+<Tab.Navigator
+      initialRouteName="Home"
+      screenOptions={{
+        tabBarShowLabel: false,
+      }}>
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          tabBarIcon: ({color}) => <Icon name="home" color={color} size={24} />,
+        }}
+      />
+      <Tab.Screen
+        name="Search"
+        component={SearchScreen}
+        options={{
+          tabBarIcon: ({color}) => (
+            <Icon name="search" color={color} size={24} />
+          ),
+        }}
+      />
+</Tab.Navigator>
+```
+
+**Tab.Navigator 주요 Props**
+
+- initialRouteName: 초기 화면의 이름
+- screenOptions: 화면의 기본 설정. 
+하단 탭 내비게이션과 비슷한데, 다음과 같은 추가 옵션이 있다.
+    - swipeEnabled: 화면을 좌우로 스와이프하여 전환할 수 있게 한다(기본값: true).
+    - lazy: 특정 탭으로 이동해야만 해당 탭을 렌더링 (기본값: true).
+    - lazyPreloadDistance: lazy 속성이 활성화된 상태에서 몇 칸 뒤 화면을 미리 불러올지 설정한다(기본값: 0).
+    - lazyPlaceholder: lazy 속성이 활성화되어 있을 때 아직 보이지 않은 화면에서 보여줄 대체 컴포넌트
+    - tabBarIndicator: 활성화된 탭을 표시하는 컴포넌트
+    - tabBarIndicatorStyle: 활성화된 탭을 표시하는 컴포넌트의 스타일
+- backBehavior: 뒤로가기할 때의 작동 방식
+- tabBarPosition: 탭 바의 위치(top 또는 bottom)
+- keyboardDismissMode: 키보드를 숨기는 설정
+    - auto: 기본값. 화면이 바뀔 때 키보드를 숨김.
+    - on-drag 화면을 드래그할 때 키보드를 숨김.
+    - none: 드래그해도 키보드를 숨기지 않음.
+- sceneContainerStyle: 각 화면에 대한 스타일
+- style: 전체 탭 뷰에 대한 스타일
+- tabBar: 탭 바를 대체할 수 있는 컴포넌트
+
+**Tab.Screen의 options Props**
+
+- tabBarIcon: 아이콘을 보여주는 함수, { focused: boolean, color: string } 타입의 파라미터를 온다.
+- tabBarLabel: 탭에서 보이는 이름
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/f73b65c1-b9ba-44da-af40-cca9cb77fb4a/Untitled.png)
+
+---
+
+### **머티리얼 하단 탭 내비게이터**
+
+상단에서 다룬 상탄 탭과 비슷하지만
+
+이 내비게이터는 하단에만 나타나며 **탭에 따라 전체 탭의 배경색을 변경 가능**하다.
+
+→ 또한 탭의 이름도 아이콘 하단에 나타난다.
+
+이때 ripple효과도 함께 전환이 가능하며
+
+탭을 활성화 시킬 때 아이콘이 상단으로 조금 움직인다.
+
+사용법은 상단의 
+
+`createMaterialTopTabNavigator`  대신`createMaterialBottomTabNavigator` 를 사용해주면 된다.
+
+```jsx
+const Tab = createMaterialBottomTabNavigator();
+```
+
+**Tab.Navigator 주요 Props**
+
+- initialRouteName: 초기 화면의 이름
+- screenOptions: 화면의 기본 설정
+- backBehavior: 뒤로가기할 때의 작동 방식
+- shifting: 이 값이 true로 지정되어 있으면 탭이 변경될 때마다 배경색을 변경하고, 활성화된 탭만 탭의 이름을 보여준다. 탭의 개수가 세 개 이상이면 이 값은 기본적으로 true로 설정되며 만약 이 값을 false로 지정하면 탭마다 배경색을 따로 따로 지정할 수 없고, 모든 탭에 이름이 보이게 된다.
+- labeled: 탭 아이콘 하단에 탭의 이름을 나타낼지 정하는 값. 
+이 값을 false로 지정하면 모든 탭에 이름이 나타나지 않는다(기본값: true).
+- activeColor: 활성화된 탭의 아이콘과 텍스트의 색상
+- inactiveColor: 비활성화된 탭의 아이콘과 텍스트의 색상
+- barStyle: 탭 바에 스타일 적용
+
+**Tab.Screen의 options Props**
+
+- tabBarIcon: 아이콘을 보여주는 함수, { focused: boolean, color: string } 타입의 파라미터를 받아온다.
+- tabBarLabel: 탭에 보이는 이름
+- tabBarBadge: 탭 아이콘에 배지를 보여준다. 
+이 값을 true로 설정하면 아이콘 우측 상단에 빨간색 점을 보여준다. 
+이 값을 문자열 또는 숫자로 입력하면 그 내용이 배지에 나타난다.
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/b24d32ed-8888-4a9e-8162-9c34726bdb00/Untitled.png)
+
+---
+
+### nullish 병합 연산자
+
+연산자 좌측에 있는 값이 null이거나 undefined면 우측의 값으로 설정한다.
+
+```jsx
+const routeName = getFocusedRouteNameFromRoute(route) ?? 'Home';
+```
+
+---
+
+## **내비게이션 Hooks**
+
+Screen으로 사용 중인 컴포넌트에서는 Props를 통해 navigation 또는 route 객체를 사용할 수 있다. 
+
+하지만 Screen으로 사용되지 않는 다른 컴포넌트에서는 navigation 또는 route를 
+
+Props로 받아와서 사용할 수 없다.
+
+제한을 우회하는 방법 중 3가지는 아래와 같다.
+
+1. **Function 형식으로 Props를 받아오기  ( non Hooks )**
+
+```jsx
+function OpenDetailButton({onPress}) {
+  return <Button title="Detail 1 열기" onPress={onPress} />;
+}
+
+function HomeScreen({navigation}) {
+  return (
+    <View>
+      <Text>Home</Text>
+      <OpenDetailButton onPress={() => navigation.push('Detail', {id: 1})} />
+    </View>
+  );
+}
+```
+
+1. **Props로 navigation 객체를 바로 넘겨주기 ( non Hooks )**
+
+```jsx
+function OpenDetailButton({navigation}) {
+  return (
+    <Button
+      title="Detail 1 열기"
+      onPress={() => navigation.push('Detail', {id: 1})}
+    />
+  );
+}
+
+function HomeScreen({navigation}) {
+  return (
+    <View>
+      <Text>Home</Text>
+        <OpenDetailButton navigation={navigation} />
+    </View>
+  );
+}
+```
+
+ 
+
+1. **useNavigation Hook 사용하기**
+
+> **useNavigation Hook 이란?**
+> 
+
+해당 Hook을 사용하면 Screen으로 사용되고 있지 않은 컴포넌트에서도
+
+상위에서 Props를 받아 사용하지 않아도 **navigation 객체**를 사용할 수 있도록 해준다.
+
+사용 예시
+
+```jsx
+import {
+    useNavigation,
+} from '@react-navigation/native';
+
+(...)
+
+function OpenDetailButton() {
+  const navigation = useNavigation();
+
+  return (
+    <Button
+      title="Detail 1 열기"
+      onPress={() => navigation.push('Detail', {id: 1})}
+    />
+  );
+}
+
+function HomeScreen() {
+  return (
+    <View>
+      <Text>Home</Text>
+      <OpenDetailButton />
+    </View>
+  );
+}
+```
+
+1. **useRoute Hook 사용하기**
+
+> **useRoute Hook 이란?**
+> 
+
+useNavigation와 비슷하지만 Screen이 아닌 컴포넌트에서
+
+**route객체** 를 사용할 수 있게 해준다.
+
+사용 예시
+
+```jsx
+import {useRoute} from '@react-navigation/native';
+
+function IDText() {
+  const route = useRoute();
+  return <Text style={styles.text}>id: {route.params.id}</Text>;
+}
+
+function DetailScreen({route, navigation}) {
+  useEffect(() => {
+    navigation.setOptions({
+      title: `상세 정보 - ${route.params.id}`,
+    });
+  }, [navigation, route.params.id]);
+  return (
+    <View style={styles.block}>
+      <IDText />
+        <View style={styles.buttons}>
+          <Button
+            title="다음"
+            onPress={() => navigation.push('Detail', {id: route.params.id + 1})}
+          />
+          <Button title="뒤로가기" onPress={() => navigation.pop()} />
+          <Button title="처음으로" onPress={() => navigation.popToTop()} />
+        </View>
+      </View>
+    );
+  }
+```
+
+1. **useFocusEffect Hook 사용하기**
+
+> **useFocusEffect Hook 이란?**
+> 
+
+화면에 포커스가 잡히면 특정 작업을 할 수있는 Hook.
+
+ex) 만약 HomeScreen에서 DetailScreen을 띄운다면 
+       HomeScreen이 화면에서 사라지는 게 아니라, HomeScreen 위에 DetailScreen을 쌓아서 보여주는 것
+
+useFocusEffect 기초가 되는  **useEffect**에 대해 먼저 알아보자
+
+해당 useEffect Hook을 통해서 컴포넌트가 마운트되거나 언마운트될 때 
+
+콘솔에 텍스트를 출력한다면 DetailScreen을 띄울 때 컴포넌트가 언마운트되지 않고
+
+뒤로가기하여 HomeScreen으로 돌아왔을 때 컴포넌트가 마운트되지 않는 것을 확인할 수 있다.
+
+사용 예시
+
+```jsx
+import React, {useEffect} from 'react';
+
+(...)
+
+function HomeScreen() {
+  useEffect(() => {
+    console.log('mounted');
+    return () => {
+      console.log('unmounted');
+    };
+  }, []);
+
+  return (
+    <View>
+      <Text>Home</Text>
+        <OpenDetailButton />
+    </View>
+  );
+}
+```
+
+* OpenDetailButton은 useNavigation Hook 예시에서 만든 버튼.
+
+> **useFocusEffect Hook**
+> 
+
+해당 Hook 사용에서 주의해야 할 것은 
+
+useCallback을 사용하지 않으면 컴포넌트가 리렌더링될 때마다 useFocusEffect에 등록한 함수가 호출되므로
+
+useFocusEffect는 꼭 useCallback과 같이 사용해야한다는 것이다.
+
+> **useCallback ?**
+> 
+
+useCallback은 컴포넌트 내부에서 함수를 만들 때
+
+새로 만든 함수를 사용하지 않고 이전에 만든 함수를 다시 사용하도록 만들어준다. 
+
+그리고 그 함수 내부의 로직에서 의존하는 값이 있다면 
+
+의존하는 값이 바뀌었을 때 함수를 교체할 수 있도록 해주는 Hook이다.
+
+사용 예시
+
+```jsx
+import React, {useEffect, useCallback} from 'react';
+import {
+    useNavigation,
+    useFocusEffect,
+} from '@react-navigation/native';
+
+const Tab = createMaterialBottomTabNavigator();
+
+function OpenDetailButton() {
+  const navigation = useNavigation();
+
+  return (
+    <Button
+      title="Detail 1 열기"
+      onPress={() => navigation.push('Detail', {id: 1})}
+    />
+  );
+}
+
+function HomeScreen() {
+  useFocusEffect(
+    useCallback(() => {
+      console.log('이 화면을 보고 있어요.');
+      return () => {
+        console.log('다른 화면으로 넘어갔어요.');
+      };
+    }, []),
+  );
+
+  return (
+    <View>
+      <Text>Home</Text>
+      <OpenDetailButton />
+    </View>
+  );
+}
+```
+
+---
