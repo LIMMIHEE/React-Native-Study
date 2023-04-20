@@ -1,3 +1,5 @@
+# Week 3
+
 ## Context API
 
 리액트에 내장된 기능 중 하나.
@@ -113,3 +115,97 @@ function BoxCustom({children}) {
 ```
 
 ---
+
+## **6.2.3 Context에서 유동적인 값 다루기**
+
+… 뭔가 이해가 어려움
+
+---
+
+**Props의 이름만 쓰고 따로 값을 지정하지 않으면 값이 true로 지정된다.**
+
+```jsx
+<TextInput
+        placeholder="당신의 오늘을 기록해보세요"
+        style={styles.bodyInput}
+        multiline
+        textAlignVertical="top"
+        onChangeText={onChangeBody}
+        value={body}
+      />
+
+//즉, 위 코드에서
+//multiline 부분은 multiline={true}와 동일한 코드다.
+```
+
+---
+
+## useRef
+
+함수 컴포넌트에서 컴포넌트의 레퍼런스를 선택할 수 있게하는 Hook
+
+<aside>
+🤔 **레퍼런스?**
+
+함수에서 사용가능한 props
+ex) int 의 레퍼런스로는 .toString()
+
+</aside>
+
+예시
+
+```jsx
+// 적용 예시
+function WriteEditor({title, body, onChangeTitle, onChangeBody}) {
+  **const bodyRef = useRef()**
+
+  return (
+    <View style={styles.block}>
+      <TextInput
+        style={styles.bodyInput}
+        multiline
+        **ref={bodyRef}**
+      />
+    </View>
+  );
+}
+
+// 사용 예시
+<TextInput
+        placeholder="제목을 입력하세요"
+        style={styles.titleInput}
+        onSubmitEditing={() => {
+          **bodyRef.current.focus()**
+        }}
+      />
+```
+
+---
+
+## UUID 라이브러리
+
+UUID는 범용 고유 식별자(universally uniqute identifier)로서
+
+표준으로 사용되는 고유 식별자 형식이다.
+
+5가지 버전이 있는데, 일반적으로 랜덤하고 고유한 식별자를 생성할 때는 v4를 많이 사용한다.
+
+예시
+
+```jsx
+import {v4} from 'uuid';
+v4(); // '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'
+```
+
+---
+
+## **date-fns 라이브러리**
+
+- 방금 전
+- 3분 전
+- 1시간 전
+- 3일 전
+- 2021년 8월 23일 07:00
+
+위와 같이 작성한 시간에 따라 다양하게 보여줄 수 있는 
+날짜 / 시간에 관한 다양한 기능을 제공하는 라이브러리.
