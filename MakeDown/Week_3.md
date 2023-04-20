@@ -273,3 +273,33 @@ Animated.timing(animation, {
   // 애니메이션 처리 완료 후 실행할 작업
 })
 ```
+
+### Animated.spring
+
+timing과 비슷하지만 서서히 변하는 것이 아닌
+
+스프링과 같이 값이 통통 튀는 효과며 변한다.
+
+숫자로 예시를 들자면 아래와같다.
+
+ex) 0 → 1.2 → 0.9 → 1.1 → 1
+
+사용 예시
+
+```jsx
+Animated.spring(animation, {
+    toValue: hidden ? 1 : 0,
+    useNativeDriver: true,
+    tension: 45,
+    friction: 5,
+  }).start();
+```
+
+다음과 같은 옵션을 설정해줄 수 있다.
+
+- tension: 강도(기본값: 40)
+- friction: 감속(기본값: 7)
+- speed: 속도(기본값: 12)
+- bounciness: 탄력성(기본값: 8)
+
+---
