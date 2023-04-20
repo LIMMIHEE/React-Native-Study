@@ -40,9 +40,9 @@ function FeedListItem({log}) {
                 Platform.OS === 'ios' && pressed && {backgroundColor: '#efefef'},
               ]}
             android_ripple={{color: '#ededed'}}>
-                <Text style={styles.date}>{formatDate(date)}</Text>
+                <Text style={styles.date}>{date}</Text>
                 <Text style={styles.title}>{title}</Text>
-                <Text style={styles.body}>{truncate(body)}</Text>
+                <Text style={styles.body}>{body}</Text>
         </Pressable>
     )
 }

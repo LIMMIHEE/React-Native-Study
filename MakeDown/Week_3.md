@@ -1,5 +1,3 @@
-# Week 3
-
 ## Context API
 
 리액트에 내장된 기능 중 하나.
@@ -144,6 +142,8 @@ function BoxCustom({children}) {
 
 함수 컴포넌트에서 컴포넌트의 레퍼런스를 선택할 수 있게하는 Hook
 
+- 레퍼런스 선택 외에 특정 값을 컴포넌트 생성 시에 설정하고, 컴포넌트가 사라질 때까지 재사용하고 싶은 경우에도 사용이 가능하다.
+
 <aside>
 🤔 **레퍼런스?**
 
@@ -209,3 +209,67 @@ v4(); // '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'
 
 위와 같이 작성한 시간에 따라 다양하게 보여줄 수 있는 
 날짜 / 시간에 관한 다양한 기능을 제공하는 라이브러리.
+
+---
+
+## Animated
+
+리액트에서 애니메이션을 구현할때는 Animated객체를 사용한다.
+
+사용시에 Animated Value가 먼저 선언되어야 하며
+해당 Value를 만들때에는 useRef가 사용되어야 한다.
+
+- 생성자 함수의 인자는 초기값을 가지도록한다.
+
+```jsx
+import React, {useRef} from 'react';
+import {Animated} from 'react-native'
+
+function Sample() {
+  const animation = useRef(new **Animated.Value**(1)).current;
+}
+```
+
+Animated 뒤에 사용하고 싶은 리액트 네이티브 컴포넌트의 이름을 넣어주어 사용이 가능하다.
+
+```jsx
+// 사용
+<Animated.View style={{opacity: animation}}></Animated.View>
+```
+
+### Animated.timing
+
+애니메이션 값을 변경할때 사용하는 함수.
+
+**아래 값은 필수적으로 설정**해주어야 한다.
+
+- **toValue**  : 어떤 값으로 변경할지
+- **useNativeDriver :** 네이티브 드라이버 사용 여부
+
+<aside>
+🤔 **네이티브 드라이버?**
+
+애니메이션 처리 작업을 자바스크립트가 아닌 네이티브에서 진행하도록 하는 옵션.
+
+transform, opacity처럼 레이아웃과 관련없는 스타일에만 적용할 수 있다.
+→ left, width, paddingLeft, marginLeft은 설정 적용 불가능하기에 false 처리를 해야한다.
+
+</aside>
+
+애니매이션은 .start() 함수로 시작하고, 해당 함수에 콜백을 넣어주면 종료시에 호출할 수 있다.
+
+**설정 예시**
+
+```jsx
+Animated.timing(animation, {
+  toValue: 0, // 어떤 값으로 변경할지 - 필수
+  duration: 1000, // 애니메이션에 걸리는 시간(밀리세컨드) - 기본값: 500
+  delay: 0, // 딜레이 이후 애니메이션 시작 - 기본값: 0
+  useNativeDriver: true, // 네이티브 드라이버 사용 여부 - 필수
+  isInteraction: true, // 사용자 인터랙션에 의해 시작한 애니메이션인지 지정 - 기본값: true
+  // 애니메이션 속도 변경 함수 - 기본값: Easing.inOut(Easing.ease)
+  easing: Easing.inOut(Easing.ease), 
+}).start(() => {
+  // 애니메이션 처리 완료 후 실행할 작업
+})
+```
