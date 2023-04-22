@@ -5,14 +5,17 @@ import {NavigationContainer} from '@react-navigation/native';
 import RootStack from './screens/RootStack';
 import { LogContextProvider } from './contexts/LogContext';
 import 'react-native-get-random-values';
+import { SearchContextProvider } from './contexts/SearchContext';
 
 
 function Apps() {
   return (
     <NavigationContainer>
-      <LogContextProvider>
-          <RootStack />
-      </LogContextProvider>
+      <SearchContextProvider>
+        <LogContextProvider>
+            <RootStack />
+        </LogContextProvider>
+      </SearchContextProvider>
     </NavigationContainer>
   );
 }

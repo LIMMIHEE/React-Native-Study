@@ -303,3 +303,82 @@ Animated.spring(animation, {
 - bounciness: 탄력성(기본값: 8)
 
 ---
+
+**!(변수) 연산자 추가 참고 사항**
+
+NOT 연산자 !는 기본적으로 true를 false로, 또는 false를 true로 바꾼다.
+
+하지만 Boolean이 아닌 타입에 ! 연산자를 쓴다면 어떻게 될까?
+
+- !null -> true
+- !{} -> false
+- !'' -> true
+- ![] -> false
+
+추가로 NOT 연산자를 두 번(!!) 사용할 경우 변수 값이 유효한 객체라면 값이 true가 되고, 값이 null이나 undefined라면 false가 된다.
+
+---
+
+### **화면 크기 조회하기**
+
+화면 크기를 dp 단위로 가져오는 방법은 두 가지이다.
+
+1. **Dimensions.get 사용**
+
+해당 Dimensions.get은 두 가지 문자열을 넣을 수 있고 
+이때 window 객체를 사용하여 앱에서 사용할 수 있는 영역 크기를 가져온다.
+
+* 이때 Android의 경우 window가 상단 상태바와 하반 메뉴 바를 제외한 크기를 넘겨주니 주의.
+
+해당 방법은 **컴포넌트 외부에서도 작동**하니 StyleSheet에서도 사용 가능.
+
+    
+    ```jsx
+    import {Dimensions} from 'react-native';
+    
+    const { width, height } = Dimensions.get('window');
+    ```
+    
+
+만약 폴더블이나 화면 방향 전환으로 인한 크기 변경 이벤트는
+아래 함수들을 이용해 대비해야한다.
+ 
+- Dimensions.addEventListener
+- Dimensions.removeEventListener
+
+```jsx
+function MyComponent() {
+  const [dimension, setDimension] = useState(Dimensions.get('window'));
+  useEffect(() => {
+    const eventListener = ({window, screen}) => {
+      setDimension(window);
+    }
+    Dimensions.addEventListener('change', eventListener);
+    return () => {
+        Dimensions.removeEventListener('change', eventListener);
+    }
+  }, []);
+```
+
+1. **useWindowDimensions Hook**
+
+Dimensions.get과 달리 화면 크기가 바뀌는 이벤트에
+
+직접 대비할 필요가 없으며 Hook 형태로 사용하기에 **값 변경시 자동으로 반영**된다.
+
+```jsx
+import React from 'react';
+import {useWindowDimensions} from 'react-native';
+
+function MyComponent() {
+  const {width, height} = useWindowDimensions();
+}
+```
+
+해당 방법은 **함수 컴포넌트 내부에서만 사용 가능**하며
+
+전체화면의 크기를 가져오는 기능은 없다.
+
+    → 만약 가져오고 싶다면 Dimensions.get('screen')을 사용해야 한다.
+
+---
