@@ -1,7 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {Animated, Button, StyleSheet, View} from 'react-native';
+import CalendarView from '../components/CalendarView';
 
-function SlideLeftRight() {
+function CalendarScreen() {
+  return <CalendarView />;
+}
+
+//슬라이딩 애니메이션
+
+/** 
+ * function SlideLeftRight() {
   const animation = useRef(new Animated.Value(0)).current;
   const [enabled, setEnabled] = useState(false);
 
@@ -47,6 +55,10 @@ const styles = StyleSheet.create({
   block: {},
     rectangle: {width: 100, height: 100, backgroundColor: 'black'},
 });
+
+*/
+
+
 
 //FadeInAndOut Animation
 /*

@@ -20,7 +20,7 @@ function SearchHeader() {
             style={styles.input} 
             placeholder='검색어를 입력하세요' 
             value={keyword}
-            onChange={onChangeText}
+            onChangeText={onChangeText}
             autoFocus />
      <Pressable
         style={({pressed}) => [styles.button, pressed && {opacity: 0.5}]}
