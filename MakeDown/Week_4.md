@@ -66,6 +66,10 @@ const 변수명 = {
 }
 ```
 
+**이때 날짜 형식에 주의할 것!!!!**
+
+yyyy-mm-dd ← 라 적으면 에러가 난다… ;-)
+
 실제 예시
 
 ```jsx
@@ -97,4 +101,204 @@ return <Calendar style={styles.calendar}
                 dotColor: '#009688',
                 todayTextColor: '#009688',
             }}/>;
+```
+
+---
+
+### reduce
+
+배열의 내장 함수.
+
+배열 안 값을 연산해 하나의 값으로 도출할 때 사용.
+
+두 개의 파라미터를 입력해야한다.
+
+1. 배열의 원소를 이용해 **연산하는 함수**
+
+함수는 아래와 같은 형태이다.
+    
+    ```jsx
+    (acc,current) => {
+    	return 계산식;
+    }
+    
+    //acc : 누적 값
+    //current : 현재 처리 중인 값
+    ```
+    
+    이때, 돌려주는 값은 숫자가 아니어도 괜찮다.
+    ex) Map 형태, List 형태도 OK
+    
+2. **초기값**
+
+사용 예시
+
+```jsx
+const array = [1,2,3,4,5];
+const sum = array.reduce((acc,current) => {
+	return acc+cureent;
+},0);
+```
+
+---
+
+## useMemo
+
+메모이제이션(memoization)을 할 수 있는 Hook.
+
+<aside>
+🤔 **메모이제이션?**
+
+동일한 계산을 반복해야할 때 이전 값을 메모리에 저장함으로 동일한 계산의 반복 수행을 제거하여 실행 속도를 빠르도록 만들어준다.
+
+</aside>
+
+사용법
+
+```jsx
+const value = useMemo(() => compute(a,b), [a,b]);
+```
+
+**각 파라미터의 의미**
+
+1번째 : 어떻게 연산할지 정의하는 함수를 넣어준다.
+
+2번째 : deps 배열을 넣어준다. 
+
+**두 번째 배열안에 넣은 내용이 바뀌면 등록한 함수로 값을 연산해주는 형식.**
+
+ 
+
+---
+
+### useReducer
+
+상태를 관리할 수 있는 또다른 Hook.
+
+현재 상태와 액션 객체를 받아 새로운 객체로 반환해준다.
+
+**useState를 여러 번 사용하는 상황에 사용하면 유용할 수있다.**
+
+→ 유용할 수도 있다, 즉 아닐 수도 있다는 것으로 
+굳이 해당 Hook을 사용하지 않고 상황에 따라 편하게 사용하면된다.
+
+장점으로는 상태 업데이트 로직을 컴포넌트 밖에서 구현할 수 있다는 점이다.
+
+- dispatch로 다양하게 업데이트 할 수 있어 Context와 함께 사용하면 유용하다.
+
+해당 함수 사용시 아래 개념이 사용된다.
+
+- state: 상태
+- action: 변화를 정의하는 객체
+- reducer: state와 action을 파라미터로 받아 
+                다음 상태 반환하는 함수
+- dispatch: action을 발생 함수
+
+기본구조
+
+```jsx
+function **reducer**(state, action) {
+  // 새로운 상태를 만드는 로직
+  // const nextState = ...
+  return nextState;
+}
+```
+
+사용법
+
+```jsx
+const [state, dispatch] = useReducer(**reducer**, initialState);
+```
+
+**useReducer 파라미터**
+
+첫번째 인자 → [reducer](https://www.notion.so/Week4-da9452dfa852495a9d557e1476f61600) 함수를 넣는다.
+
+두번째 인자 → 상태의 초기 값을 넣는다.
+
+예제
+
+```jsx
+const initialState = {value: 1};
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'increase':
+      return {value: state.value + action.diff};
+    case 'decrease':
+      return {value: state.value - action.diff};
+    default:
+      throw new Error('Unhandled action type');
+  }
+}
+
+function Counter() {
+  const [state, dispatch] = **useReducer(reducer, initialState);**
+  const onIncrease = () => dispatch({type: 'increase', diff: 1});
+  const onDecrease = () => dispatch({type: 'decrease', diff: 1});
+
+  return (...)
+}
+```
+
+**dispatch 사용 및 동작 설명** 
+
+아래에서 onIncrease함수를 예시로 하자.
+
+```jsx
+function reducer(state, action) {
+  switch (action.type) {
+    case 'increase':
+      return {value: state.value + action.diff};
+    case 'decrease':
+      return {value: state.value - action.diff};
+    default:
+      throw new Error('Unhandled action type');
+  }
+}
+
+function Counter() {
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const onIncrease = () => dispatch({type: 'increase', diff: 1});
+  const onDecrease = () => dispatch({type: 'decrease', diff: 1});
+
+  return (...)
+}
+```
+
+위와 같이 객체를 인자에 넣어 **dispatch 함수를 호출하면 reducer함수가 호출** 된다.
+
+이때, state는 현재 상태를 가르키며 action은 dispatch로 넘어온 인자로 넣은 객체를 가르킨다.
+
+reducder에서 반환한 값이 다음 업데이트 값으로 사용된다.
+
+---
+
+### IIFE 패턴
+
+= IIFE, Immediately-Invoked Function Expression
+
+즉시실행함수 표현식를 뜻한다.
+
+자세한 내용은 아래 블로그 참조
+
+[JavaScript // 패턴 // IIFE](https://moonscode.tistory.com/12)
+
+기본 형식 
+
+```jsx
+(function () {
+    // TODO    
+})()
+```
+
+사용 예시
+
+```jsx
+// 즉시호출함수
+(function foo () {})(
+
+);
+
+alert(foo); // 실패, 사유: 즉시호출함수 이기에 별도로 불러와 사용이 불가하다.
 ```

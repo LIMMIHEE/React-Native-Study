@@ -1,9 +1,36 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {Animated, Button, StyleSheet, View} from 'react-native';
 import CalendarView from '../components/CalendarView';
+import LogContext from '../contexts/LogContext';
+import { format } from 'date-fns';
+import FeedList from '../components/FeedList';
 
 function CalendarScreen() {
-  return <CalendarView />;
+  const {logs} = useContext(LogContext);
+  const [selectedDate, setSelectedDate] = useState(
+    format(new Date(),'yyyy-MM-dd'),
+  );
+
+  const markedDates = useMemo(()=>logs.reduce((acc, current) => {
+    const formattedDate = format(new Date(current.date), 'yyyy-MM-dd');
+    acc[formattedDate] = {marked: true};
+    return acc;
+  }, {}),[logs]);
+
+  const filteredLogs = logs.filter(
+    (log) => format(new Date(log.date), 'yyyy-MM-dd') === selectedDate
+  );
+
+
+  return (
+    <FeedList
+      logs={filteredLogs}
+      ListHeaderComponent={
+        <CalendarView markedDates={markedDates}
+        selectedDate={selectedDate}
+        onSelectDate={setSelectedDate}/>
+      }/>
+  );
 }
 
 //슬라이딩 애니메이션
