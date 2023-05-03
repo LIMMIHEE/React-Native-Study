@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>802970525989-n8c8cnr25u4o546ujj2tff2gor19odn0.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.802970525989-n8c8cnr25u4o546ujj2tff2gor19odn0</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>802970525989-14lo67k43frlkr0i0hk1p9t222v2nub5.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBj41DzlU9r6AhMZHIMpXeCjhmu3_0FU1g</string>
+	<key>GCM_SENDER_ID</key>
+	<string>802970525989</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.Mirim.PublicGallery</string>
+	<key>PROJECT_ID</key>
+	<string>public-gallery-929da</string>
+	<key>STORAGE_BUCKET</key>
+	<string>public-gallery-929da.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:802970525989:ios:67abad311f5a8c5a2d3acc</string>
+</dict>
+</plist>
