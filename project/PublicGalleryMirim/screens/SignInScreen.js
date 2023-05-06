@@ -5,9 +5,12 @@ import SignForm from "../components/SignForm";
 import SignButton from "../components/SignButtons";
 import { signIn, signUp } from "../lib/auth";
 import { getUser } from "../lib/users";
+import { useUserContext } from "../contexts/UserContext";
+import { useNavigation } from "@react-navigation/native";
 
 function SignInScreen({route}) {
     const isSignUp = route.params ?? {};
+    const navigation = useNavigation();
 
     const [form, setForm] = useState({
         email:'',
@@ -15,6 +18,7 @@ function SignInScreen({route}) {
         confirmPassword:''
     });
     const [loading, setLoading] = useState();
+    const {setUser} = useUserContext();
 
     const createChangeTextHandler = (name) => (value) =>{
         setForm({...form,[name]:value});
@@ -33,11 +37,14 @@ function SignInScreen({route}) {
         
         try{
             const {user} = isSignUp ? await signUp(info) :  await signIn(info);
+            // 테스트용 로그인 고정
+            //const {user} = await signIn(info);
+
             const profile = await getUser(user.uid);
             if(!profile){
-                Navigation.navigate('Welcome',{uid: user.uid});
+                navigation.navigate('Welcome',{uid: user.uid});
             }else{
-
+                setUser(profile);
             }
             console.log(form);
         } catch(e){
@@ -48,8 +55,9 @@ function SignInScreen({route}) {
                 'auth/invalid-email': '유효하지 않은 이메일 주소입니다.',
                 'auth/weak-password': '비밀번호는 6글자 이상이어야 합니다.',
               };
-              const msg = messages[e.code] || isSignUp ? '가입' : '로그인'+'실패';
+              const msg = messages[e.code] || isSignUp ? '가입 실패' : '로그인 실패';
               Alert.alert('실패', msg);
+              console.log(e);
         } finally {
             setLoading(false);
         }

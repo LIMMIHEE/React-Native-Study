@@ -19,9 +19,12 @@
     "@react-navigation/native-stack": "^6.9.12",
     "react": "17.0.2",
     "react-native": "0.68.2",
+    "react-native-get-random-values": "^1.8.0",
+    "react-native-image-picker": "^5.3.1",
     "react-native-safe-area-context": "v4.3.1",
     "react-native-screens": "^3.20.0",
-    "react-native-vector-icons": "^9.2.0"
+    "react-native-vector-icons": "^9.2.0",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.21.8",

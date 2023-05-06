@@ -2,8 +2,12 @@ import React from 'react';
 import {KeyboardAvoidingView, Platform, StyleSheet, Text} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import SetupProfile from "../components/SetupProfile";
+import { useRoute } from '@react-navigation/native';
 
 function WelcomeScreen() {
+  const {params} = useRoute();
+  const {uid} = params || {};
+
   return (
     <KeyboardAvoidingView
       style={styles.keyboardAvoidingView}
@@ -11,7 +15,7 @@ function WelcomeScreen() {
       <SafeAreaView style={styles.block}>
         <Text style={styles.title}>환영합니다!</Text>
         <Text style={styles.description}>프로필을 설정하세요.</Text>
-        <SetupProfile />
+        <SetupProfile uid={uid}/>
       </SafeAreaView>
     </KeyboardAvoidingView>
   );
