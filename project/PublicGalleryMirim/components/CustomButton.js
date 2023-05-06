@@ -1,5 +1,5 @@
 import React from "react";
-import { Platform, Pressable, StyleSheet } from "react-native";
+import { Platform, Pressable, StyleSheet, View, Text } from "react-native";
 
 function CustomButton({onPress, title, hasMarginBottom, theme}) {
     const isPrimary = theme === 'primary';
@@ -34,37 +34,34 @@ CustomButton.defaultProps = {
 };
 
 const styles = StyleSheet.create({
-    overflow:{
-        borderRadius:4,
-        overflow: 'hidden'
+    overflow: {
+        borderRadius: 4,
+        overflow: 'hidden',
     },
-    wrapper:{
-        borderRadius:4,
-        height:48,
-        alignItems:'center',
-        justifyContent:'center',
-        backgroundColor:'#6200ee'
-    },
-    text:{
-        fontWeight:'bold',
-        fontSize:14,
-        color:'white'
-    },
-    margin:{
-        marginBottom:8
-    },
-    block:{
-        flex:1
+    wrapper: {
+      borderRadius: 4,
+      height: 48,
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     primaryWrapper: {
-        backgroundColor: '#6200ee',
+      backgroundColor: '#6200ee',
+    },
+    text: {
+      fontWeight: 'bold',
+      fontSize: 14,
+      color: 'white',
     },
     primaryText: {
-        color: 'white',
+      color: 'white',
     },
     secondaryText: {
-        color: '#6200ee',
+      color: '#6200ee',
     },
-});
+    margin: {
+      marginBottom: 8,
+    },
+  });
+  
 
 export default CustomButton;

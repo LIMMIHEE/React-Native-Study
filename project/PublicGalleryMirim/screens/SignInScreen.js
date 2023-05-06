@@ -1,26 +1,60 @@
-import React, { useState,useRef } from "react";
-import { Keyboard, KeyboardAvoidingView, Platform, StyleSheet, Text } from "react-native";
+import React, { useState } from "react";
+import { Alert, Keyboard, KeyboardAvoidingView, Platform, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native";
-import BorderedInput from "../components/BorderedInput";
-import CustomButton from "../components/CustomButton";
+import SignForm from "../components/SignForm";
+import SignButton from "../components/SignButtons";
+import { signIn, signUp } from "../lib/auth";
+import { getUser } from "../lib/users";
 
-function SignInScreen({navigation, route}) {
+function SignInScreen({route}) {
     const isSignUp = route.params ?? {};
+
     const [form, setForm] = useState({
         email:'',
         password:'',
         confirmPassword:''
     });
+    const [loading, setLoading] = useState();
+
     const createChangeTextHandler = (name) => (value) =>{
         setForm({...form,[name]:value});
     };
-    const onSubmit = ()=>{
+    const onSubmit = async () => {
         Keyboard.dismiss();
-        console.log(form);
-    }
+        const {email, password, confirmPassword} = form;
 
-    const passwordRef = useRef();
-    const confirmPasswordRef = useRef();
+        if (isSignUp && password !== confirmPassword) {
+            Alert.alert('로그인 실패', '비밀번호가 일치하지 않습니다.');
+            return;
+        }
+
+        const info = {email, password};
+        setLoading(true);
+        
+        try{
+            const {user} = isSignUp ? await signUp(info) :  await signIn(info);
+            const profile = await getUser(user.uid);
+            if(!profile){
+                Navigation.navigate('Welcome',{uid: user.uid});
+            }else{
+
+            }
+            console.log(form);
+        } catch(e){
+            const messages = {
+                'auth/email-already-in-use': '이미 가입된 이메일입니다.',
+                'auth/wrong-password': '잘못된 비밀번호입니다.',
+                'auth/user-not-found': '존재하지 않는 계정입니다.',
+                'auth/invalid-email': '유효하지 않은 이메일 주소입니다.',
+                'auth/weak-password': '비밀번호는 6글자 이상이어야 합니다.',
+              };
+              const msg = messages[e.code] || isSignUp ? '가입' : '로그인'+'실패';
+              Alert.alert('실패', msg);
+        } finally {
+            setLoading(false);
+        }
+     
+    }
 
     return (
         <KeyboardAvoidingView
@@ -29,60 +63,12 @@ function SignInScreen({navigation, route}) {
             <SafeAreaView style={styles.fullScreen}>
                 <Text style={styles.text}>Public Gallery</Text>
                 <View style={styles.form}>
-                    <BorderedInput hasMarginBottom placeholder="이메일"
-                        value={form.email}
-                        onChangeText={createChangeTextHandler('email')}
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        autoCompleteType="email"
-                        keyboardType="email-address"
-                        returnKeyType="next"
-                        onSubmitEditing={() => passwordRef.current.focus()}/>
-
-                    <BorderedInput placeholder="비밀번호" 
-                        hasMarginBottom={isSignUp} 
-                        value={form.password}
-                        onChangeText={createChangeTextHandler('password')}
-                        secureTextEntry
-                        ref={passwordRef}
-                        returnKeyType={isSignUp ? 'next' : 'done'}
-                        onSubmitEditing={() => {
-                          if (isSignUp) {
-                            confirmPasswordRef.current.focus();
-                          } else {
-                            onSubmit();
-                          }
-                        }}/>
-
-                    {isSignUp && <BorderedInput placeholder="비밀번호 확인" 
-                            value={form.confirmPassword}
-                            onChangeText={createChangeTextHandler('confirmPassword')}
-                            secureTextEntry
-                            ref={confirmPasswordRef}
-                            returnKeyType="done"
-                            onSubmitEditing={onSubmit}/>}
-                    
-                    <View style={styles.buttons}>
-                        {
-                            isSignUp ? ( 
-                                <>
-                                    <CustomButton title="회원가입" hasMarginBottom onPress={onSubmit}/>
-                                    <CustomButton title="로그인" theme="secondary" onPress={()=>{
-                                        navigation.goBack();
-                                    }} /> 
-                                </>
-                            ) : (
-                                <>
-                                    <CustomButton title="로그인" hasMarginBottom onPress={onSubmit}/>
-                                    <CustomButton title="회원가입" 
-                                        theme="secondary"
-                                        onPress={()=>{
-                                            navigation.push('SignIn',{isSignUp:true})
-                                        }}/>
-                                </>
-                            )
-                        }
-                    </View>
+                    <SignForm
+                        isSignUp={isSignUp}
+                        onSubmit={onSubmit}
+                        form={form}
+                        createChangeTextHandler={createChangeTextHandler}/>
+                    <SignButton isSignUp={isSignUp} onSubmit={onSubmit} loading={loading}/>
                 </View>
             </SafeAreaView>
         </KeyboardAvoidingView>
@@ -97,16 +83,13 @@ const styles = StyleSheet.create({
         justifyContent:'center'
     },
     text : {
-        fontSize32,
+        fontSize:32,
         fontWeight:'bold'
     },
     form:{
         marginTop:64,
         width:'100%',
         paddingHorizontal:16,
-    },
-    buttons:{
-        marginTop:64
     },
     KeyboardAvoidingView:{
         flex:1
