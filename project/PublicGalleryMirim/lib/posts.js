@@ -2,7 +2,7 @@ import firestore from '@react-native-firebase/firestore';
 
 const postsCollection = firestore().collection('posts');
 
-export const PAGE_LIMIT = 3;
+export const PAGE_LIMIT = 15;
 
 export function createPost({user, photoURL, description}) {
   return postsCollection.add({
@@ -13,12 +13,22 @@ export function createPost({user, photoURL, description}) {
   });
 }
 
-export async function getPosts() {
-  const snapShot = await postsCollection
-    .orderBy('createdAt', 'desc')
-    .limit(PAGE_LIMIT)
-    .get();
-  const posts = snapShot.docs.map(doc => ({
+export async function getPosts({userId, mode, id} = {}) {
+  let query = postsCollection.orderBy('createdAt', 'desc').limit(PAGE_LIMIT);
+  if (userId) {
+    query = query.where('user.id', '==', userId);
+  }
+  if (id) {
+    const cursorDoc = await postsCollection.doc(id).get();
+    query =
+      mode === 'older'
+        ? query.startAfter(cursorDoc)
+        : query.endBefore(cursorDoc);
+  }
+
+  const snapshot = await query.get();
+
+  const posts = snapshot.docs.map(doc => ({
     id: doc.id,
     ...doc.data(),
   }));
@@ -26,34 +36,18 @@ export async function getPosts() {
   return posts;
 }
 
-export async function getOlderPosts(id) {
-  const cursorDoc = await postsCollection.doc(id).get();
-  const snapShot = await postsCollection
-    .orderBy('createdAt', 'desc')
-    .startAfter(cursorDoc)
-    .limit(PAGE_LIMIT)
-    .get();
-
-  const posts = snapShot.docs.map(doc => ({
-    id: doc.id,
-    ...doc.data(),
-  }));
-
-  return posts;
+export async function getOlderPosts(id, userId) {
+  return getPosts({
+    id,
+    mode: 'older',
+    userId,
+  });
 }
 
-export async function getNewerPosts(id) {
-  const cursorDoc = await postsCollection.doc(id).get();
-  const snapShot = await postsCollection
-    .orderBy('createdAt', 'desc')
-    .endBefore(cursorDoc)
-    .limit(PAGE_LIMIT)
-    .get();
-
-  const posts = snapShot.docs.map(doc => ({
-    id: doc.id,
-    ...doc.data(),
-  }));
-
-  return posts;
+export async function getNewerPosts(id, userId) {
+  return getPosts({
+    id,
+    mode: 'newer',
+    userId,
+  });
 }

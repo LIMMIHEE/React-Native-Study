@@ -1,32 +1,33 @@
 import React, {useMemo} from 'react';
 import {View, StyleSheet, Text, Image, Pressable} from 'react-native';
+import Avatar from './Avatar';
+import {useNavigation, useNavigationState} from '@react-navigation/native';
 
 function PostCard({user, photoURL, description, createdAt, id}) {
+  const routeNames = useNavigationState((state) => state.routeNames);
   const date = useMemo(
     () => (createdAt ? new Date(createdAt._seconds * 1000) : new Date()),
     [createdAt],
   );
+  const navigation = useNavigation();
 
   const onOpenProfile = () => {
-    // TODO: 사용자 프로필 화면 열기
+    if (routeNames.find(routeName => routeName === 'MyProfile')) {
+      navigation.navigate('MyProfile');
+    } else {
+      navigation.navigate('Profile', {
+        userId: user.id,
+        displayName: user.displayName,
+      });
+    }
   };
 
   return (
     <View style={styles.block}>
       <View style={[styles.head, styles.paddingBlock]}>
-        <Pressable
-          style={styles.profile}
-          onPress={onOpenProfile}
-          source={
-            user.photoURL
-              ? {
-                  uri: user.photoURL,
-                }
-              : require('../assets/user.png')
-          }
-          style={styles.avatar}
-          resizeMode="cover"
-        />
+        <Pressable style={styles.profile} onPress={onOpenProfile}>
+          <Avatar source={user.photoURL && {uri: user.photoURL}} />
+        </Pressable>
         <Text style={styles.displayName}>{user.displayName}</Text>
       </View>
       <Image
@@ -49,11 +50,6 @@ const styles = StyleSheet.create({
   block: {
     paddingTop: 16,
     paddingBottom: 16,
-  },
-  avatar: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
   },
   paddingBlock: {
     paddingHorizontal: 16,
