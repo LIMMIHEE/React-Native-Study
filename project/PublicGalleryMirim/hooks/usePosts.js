@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {getNewerPosts, getOlderPosts, getPosts, PAGE_SIZE} from '../lib/posts';
+import {getNewerPosts, getOlderPosts, getPosts, PAGE_LIMIT} from '../lib/posts';
 
 export default function usePosts(userId) {
   const [posts, setPosts] = useState(null);
@@ -7,12 +7,12 @@ export default function usePosts(userId) {
   const [refreshing, setRefreshing] = useState(false);
 
   const onLoadMore = async () => {
-    if (noMorePost || !posts || posts.length < PAGE_SIZE) {
+    if (noMorePost || !posts || posts.length < PAGE_LIMIT) {
       return;
     }
     const lastPost = posts[posts.length - 1];
     const olderPosts = await getOlderPosts(lastPost.id, userId);
-    if (olderPosts.length < PAGE_SIZE) {
+    if (olderPosts.length < PAGE_LIMIT) {
       setNoMorePost(true);
     }
     setPosts(posts.concat(olderPosts));
@@ -35,7 +35,7 @@ export default function usePosts(userId) {
   useEffect(() => {
     getPosts({userId}).then(_posts => {
       setPosts(_posts);
-      if (_posts.length < PAGE_SIZE) {
+      if (_posts.length < PAGE_LIMIT) {
         setNoMorePost(true);
       }
     });

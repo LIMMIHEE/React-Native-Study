@@ -36,6 +36,16 @@ export async function getPosts({userId, mode, id} = {}) {
   return posts;
 }
 
+export function removePost(id) {
+  return postsCollection.doc(id).delete();
+}
+
+export function updatePost({id, description}) {
+  return postsCollection.doc(id).update({
+    description,
+  });
+}
+
 export async function getOlderPosts(id, userId) {
   return getPosts({
     id,
