@@ -1,28 +1,30 @@
+import {useNavigation, useNavigationState} from '@react-navigation/native';
 import React, {useMemo} from 'react';
 import {View, StyleSheet, Text, Image, Pressable} from 'react-native';
 import Avatar from './Avatar';
-import {useNavigation, useNavigationState} from '@react-navigation/native';
 import {useUserContext} from '../contexts/UserContext';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import usePostActions from '../hooks/usePostActions';
 import ActionSheetModal from './ActionSheetModal';
+import usePostActions from '../hooks/usePostActions';
 
 function PostCard({user, photoURL, description, createdAt, id}) {
   const date = useMemo(
     () => (createdAt ? new Date(createdAt._seconds * 1000) : new Date()),
     [createdAt],
   );
-  const routeNames = useNavigationState(state => state.routeNames);
   const navigation = useNavigation();
+  const routeNames = useNavigationState(state => state.routeNames);
 
   const {user: me} = useUserContext();
-  const {isSelecting, onPressMore, onClose, action} = usePostActions({
+  const isMyPost = me.id === user.id;
+
+  const {isSelecting, onPressMore, onClose, actions} = usePostActions({
     id,
     description,
   });
-  const isMyPost = me.id === user.id;
 
   const onOpenProfile = () => {
+    // MyProfile이 존재하는지 확인
     if (routeNames.find(routeName => routeName === 'MyProfile')) {
       navigation.navigate('MyProfile');
     } else {
@@ -39,10 +41,10 @@ function PostCard({user, photoURL, description, createdAt, id}) {
         <View style={[styles.head, styles.paddingBlock]}>
           <Pressable style={styles.profile} onPress={onOpenProfile}>
             <Avatar source={user.photoURL && {uri: user.photoURL}} />
+            <Text style={styles.displayName}>{user.displayName}</Text>
           </Pressable>
-          <Text style={styles.displayName}>{user.displayName}</Text>
           {isMyPost && (
-            <Pressable hitSlop={8}>
+            <Pressable hitSlop={8} onPress={onPressMore}>
               <Icon name="more-vert" size={20} />
             </Pressable>
           )}
@@ -62,8 +64,8 @@ function PostCard({user, photoURL, description, createdAt, id}) {
       </View>
       <ActionSheetModal
         visible={isSelecting}
+        actions={actions}
         onClose={onClose}
-        actions={action}
       />
     </>
   );
@@ -74,6 +76,7 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 16,
   },
+
   paddingBlock: {
     paddingHorizontal: 16,
   },

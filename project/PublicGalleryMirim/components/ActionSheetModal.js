@@ -34,6 +34,7 @@ function ActionSheetModal({visible, onClose, actions}) {
     </Modal>
   );
 }
+
 const styles = StyleSheet.create({
   background: {
     backgroundColor: 'rgba(0,0,0,0.6)',
