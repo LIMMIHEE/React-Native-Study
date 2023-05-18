@@ -26,6 +26,7 @@
     "react-native-reanimated": "^3.1.0",
     "react-native-safe-area-context": "v4.3.1",
     "react-native-screens": "^3.20.0",
+    "react-native-splash-screen": "^3.3.0",
     "react-native-vector-icons": "^9.2.0",
     "uuid": "^9.0.0"
   },

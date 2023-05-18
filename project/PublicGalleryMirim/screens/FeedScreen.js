@@ -12,12 +12,6 @@ import events from '../lib/events';
 function FeedScreen() {
   const {posts, noMorePost, refreshing, onLoadMore, onRefresh} = usePosts();
 
-  useEffect(()=>{
-    events.addListener('refresh', onRefresh);
-    return () => {
-      events.removeListener('refresh', onRefresh);
-    };
-  },[onRefresh]);
 
   return (
     <FlatList
