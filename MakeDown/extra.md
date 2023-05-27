@@ -1,4 +1,6 @@
-# 기타 Hook 정리
+# 기타 정리
+
+# Hook
 
 ## useQuery
 
@@ -170,3 +172,30 @@ function Sample() {
 - error: 오류가 발생했을 때 오류 정보를 지님.
 - data: 요청이 성공한 데이터를 가리킴.
 - reset: 상태를 모두 초기화하는 함수.
+
+---
+
+# TS 문법
+
+## |
+
+single vertical bar
+
+조합 유형
+
+두 개 이상의 다른 타입으로 구성된 유형으로, 이러한 타입 중 *하나*일 수 있는 값을 나타낸다. 
+
+- 이러한 각 타입을 *조합원*이라고 부른다.
+
+코드 예시
+
+```jsx
+let element: HTMLElement | null = null;
+// Equivalent to
+let element: (HTMLElement | null) = null;
+```
+
+코드 설명
+
+- `HTMLElementnull` 혹은 `null` 둘 중 하나의 타입일 수 있다.
+- `null` 을 초기 값으로 설정.
